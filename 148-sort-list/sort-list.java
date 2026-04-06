@@ -9,40 +9,53 @@
  * }
  */
 class Solution {
+    
     public ListNode sortList(ListNode head) {
-        if(head == null || head.next == null)
-            return head;
-        ListNode slow = head;
-        ListNode fast = head;
-        ListNode t = null;
+        if (head == null || head.next == null) return head;
+
+        // Step 1: Find middle
+        ListNode mid = getMid(head);
+        ListNode rightHead = mid.next;
+        mid.next = null;
+
+        // Step 2: Sort both halves
+        ListNode left = sortList(head);
+        ListNode right = sortList(rightHead);
+
+        // Step 3: Merge
+        return merge(left, right);
+    }
+
+    // Find middle node
+    private ListNode getMid(ListNode head) {
+        ListNode slow = head, fast = head.next;
+
         while (fast != null && fast.next != null) {
-            t = slow;
             slow = slow.next;
             fast = fast.next.next;
         }
-        t.next = null;
-        ListNode s1 = sortList(head);
-        ListNode s2 = sortList(slow);
-        return merge(s1,s2);
+        return slow;
     }
-    ListNode merge(ListNode s1, ListNode s2) {
-        ListNode k1 = new ListNode(0);
-        ListNode k2 = k1;
-        while (s1 != null && s2 != null) {
-            if (s1.val < s2.val) {
-                k2.next = s1;
-                s1 = s1.next;
+
+    // Merge two sorted lists
+    private ListNode merge(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0);
+        ListNode tail = dummy;
+
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                tail.next = l1;
+                l1 = l1.next;
+            } else {
+                tail.next = l2;
+                l2 = l2.next;
             }
-            else{
-                k2.next = s2;
-                s2 = s2.next;
-            }
-            k2 = k2.next;
+            tail = tail.next;
         }
-        if (s1 != null)
-            k2.next = s1;
-        if (s2 != null)
-            k2.next = s2;
-        return k1.next;
+
+        if (l1 != null) tail.next = l1;
+        if (l2 != null) tail.next = l2;
+
+        return dummy.next;
     }
 }
