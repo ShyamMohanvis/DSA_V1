@@ -1,30 +1,37 @@
 class Solution {
     public boolean buddyStrings(String s, String goal) {
-        if (s.length() != goal.length()) return false;
-
-        if (s.equals(goal)) {
-            Map<Character, Integer> freq = new HashMap<>();
-            for (char c : s.toCharArray()) {
-                freq.put(c, freq.getOrDefault(c, 0) + 1);
-                if (freq.get(c) > 1) return true; 
-            }
+        if(s.length() != goal.length()){
             return false;
         }
 
-        List<Integer> mismatch = new ArrayList<>();
-
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) != goal.charAt(i)) {
-                mismatch.add(i);
-                if (mismatch.size() > 2) return false;
+        int n = s.length();
+        if (s.equals(goal)) {
+            Set<Character> temp = new HashSet<>();
+            for (char c : s.toCharArray()) {
+                temp.add(c);
             }
+            return temp.size() < goal.length(); // Swapping same characters
         }
 
-        if (mismatch.size() == 2) {
-            int i = mismatch.get(0), j = mismatch.get(1);
-            return s.charAt(i) == goal.charAt(j) && s.charAt(j) == goal.charAt(i);
+        int i = 0;
+        int j = n - 1;
+
+        while (i < j && s.charAt(i) == goal.charAt(i)) {
+            i++;
         }
 
-        return false;
+        while (j >= 0 && s.charAt(j) == goal.charAt(j)) {
+            j--;
+        }
+
+        if (i < j) {
+            char[] sArr = s.toCharArray();
+            char temp = sArr[i];
+            sArr[i] = sArr[j];
+            sArr[j] = temp;
+            s = new String(sArr);
+        }
+
+        return s.equals(goal);
     }
 }
