@@ -1,34 +1,46 @@
 class Solution {
     public String mostCommonWord(String paragraph, String[] banned) {
-        paragraph = paragraph.toLowerCase().replaceAll("[^a-z]", " ");
+      
+        String low = paragraph.toLowerCase();
         
-        String[] words = paragraph.split("\\s+");
+
+        String[] words = low.split("[^a-z]+");
         
-        Set<String> bannedSet = new HashSet<>(Arrays.asList(banned));
         
-        HashMap<String, Integer> map = new HashMap<>();
+        String res = "";
+
+      
+        Map<String, Integer> map = new HashMap<>();
+        
+     
         for (String word : words) {
-            if (!bannedSet.contains(word) && !word.isEmpty()) {
-                if(map.containsKey(word)){
-                int old_freq=map.get(word);
-                int new_freq=old_freq+1;
-                map.put(word,new_freq);
-            }else{
-                map.put(word,1);
+           
+            if (word.isEmpty()) continue; 
+            
+            
+            boolean isBanned = false;
+            for (String bannedWord : banned) {
+                if (word.equals(bannedWord)) {
+                    isBanned = true;
+                    break;
+                }
             }
-            }
-        }
-
-        String mostCommon = "";
-        int maxCount = 0;
-        for (String word : map.keySet()) {
-            if (map.get(word) > maxCount) {
-                maxCount = map.get(word);
-                mostCommon = word;
+            
+           
+            if (!isBanned) {
+                map.put(word, map.getOrDefault(word, 0) + 1);
             }
         }
-
-        return mostCommon;
         
+      
+        int maxCount = 0;
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                maxCount = entry.getValue();
+                res = entry.getKey();
+            }
+        }
+
+        return res;
     }
 }
